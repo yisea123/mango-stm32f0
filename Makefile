@@ -2,6 +2,8 @@ ARMGNU = tools/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi
 
 STM32Cube = lib/STM32Cube_FW_F0_V1.6.0
 
+CPU = -mthumb -mcpu=cortex-m0 -mfloat-abi=soft
+
 SPECS = nano.specs
 #SPECS = rdimon.specs
 
@@ -11,8 +13,9 @@ DEFINES += MANGO_NO_F64
 #DEFINES += MANGO_NO_REFS
 DEFINES += MANGO_NO_VERIFICATION
 
-DEFINES += USE_HAL_DRIVER
+DEFINES += STM32F0xx
 DEFINES += STM32F051x8
+DEFINES += USE_HAL_DRIVER
 
 DEFINES += HAL_MODULE_ENABLED
 #DEFINES += HAL_ADC_MODULE_ENABLED
@@ -47,14 +50,18 @@ DEFINES += HAL_RCC_MODULE_ENABLED
 #DEFINES += HAL_WWDG_MODULE_ENABLED
 
 INCLUDES += src
+
 INCLUDES += lib/mango/src
 
 INCLUDES += $(STM32Cube)/Drivers/STM32F0xx_HAL_Driver/Inc
 INCLUDES += $(STM32Cube)/Drivers/CMSIS/Include
 INCLUDES += $(STM32Cube)/Drivers/CMSIS/Device/ST/STM32F0xx/Include
 
-SOURCES += $(wildcard src/*.c)
-SOURCES += $(wildcard lib/mango/src/*.c)
+SOURCES += src/main.c
+SOURCES += src/stm32f0xx_hal_msp.c
+SOURCES += src/stm32f0xx_it.c
+
+SOURCES += lib/mango/src/mango.c
 
 SOURCES += $(STM32Cube)/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c
 SOURCES += $(STM32Cube)/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c
@@ -72,15 +79,17 @@ LDSCRIPT = STM32F051R8_FLASH.ld
 
 OBJ_FILES = $(addprefix obj/,$(addsuffix .o,$(basename $(SOURCES))))
 
-CFLAGS = -mcpu=cortex-m0 -mthumb --specs=$(SPECS) \
+CFLAGS = $(CPU) --specs=$(SPECS) \
 	-Wall -Wextra -Wno-unused-parameter -Werror \
 	-std=c11 -O3 -fvisibility=hidden \
 	-Wl,--gc-sections,--error-unresolved-symbols,--fatal-warnings \
 	-fdata-sections -ffunction-sections \
+	"-D__weak=__attribute__((weak))" \
+	"-D__packed=__attribute__((__packed__))" \
 	$(addprefix -I,$(INCLUDES)) \
 	$(addprefix -D,$(DEFINES))
 
-AFLAGS = --warn --fatal-warnings -mcpu=cortex-m0
+AFLAGS = $(CPU) --warn --fatal-warnings
 
 all: bin/program.bin
 

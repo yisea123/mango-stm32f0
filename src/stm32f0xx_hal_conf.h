@@ -1,8 +1,5 @@
 #pragma once
 
-#define __weak __attribute__((weak))
-#define __packed __attribute__((__packed__))
-
 #define HSE_VALUE ((uint32_t)8000000)
 #define HSE_STARTUP_TIMEOUT ((uint32_t)100)
 #define HSI_VALUE ((uint32_t)8000000)
