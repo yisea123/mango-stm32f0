@@ -1,0 +1,3 @@
+[submodule "lib/mango"]
+	path = lib/mango
+	url = https://github.com/ektrah/mango
