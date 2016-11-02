@@ -89,8 +89,6 @@ CFLAGS = $(CPU) --specs=$(SPECS) \
 	$(addprefix -I,$(INCLUDES)) \
 	$(addprefix -D,$(DEFINES))
 
-AFLAGS = $(CPU) --warn --fatal-warnings
-
 all: bin/program.bin
 
 bin/program.bin: bin/program.elf
@@ -108,11 +106,11 @@ bin/program.elf: $(OBJ_FILES)
 
 obj/%.o: %.c
 	@mkdir -p $(dir $@)
-	@$(ARMGNU)-gcc $(CFLAGS) -o $@ -c $<
+	@$(ARMGNU)-gcc $(CFLAGS) -c -o $@ $<
 
 obj/%.o: %.s
 	@mkdir -p $(dir $@)
-	@$(ARMGNU)-as $(AFLAGS) -o $@ $<
+	@$(ARMGNU)-gcc $(CFLAGS) -c -o $@ $<
 
 clean:
 	@rm -rf obj bin
