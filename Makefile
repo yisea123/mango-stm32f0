@@ -1,6 +1,5 @@
-ARMGNU = tools/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi
-
-STM32Cube = lib/STM32Cube_FW_F0_V1.6.0
+ARMGNU = tools/gcc-arm-none-eabi-6-2017-q1-update/bin/arm-none-eabi
+STM32Cube = tools/STM32Cube_FW_F0_V1.8.0
 
 CPU = -mthumb -mcpu=cortex-m0 -mfloat-abi=soft
 
@@ -10,8 +9,7 @@ SPECS = nano.specs
 DEFINES += MANGO_NO_I64
 DEFINES += MANGO_NO_F32
 DEFINES += MANGO_NO_F64
-#DEFINES += MANGO_NO_REFS
-DEFINES += MANGO_NO_VERIFICATION
+DEFINES += MANGO_NO_REFS
 
 DEFINES += STM32F0xx
 DEFINES += STM32F051x8
@@ -81,7 +79,7 @@ OBJ_FILES = $(addprefix obj/,$(addsuffix .o,$(basename $(SOURCES))))
 
 CFLAGS = $(CPU) --specs=$(SPECS) \
 	-Wall -Wextra -Wno-unused-parameter -Werror \
-	-std=c11 -O3 -fvisibility=hidden \
+	-std=c11 -Os -fvisibility=hidden \
 	-Wl,--gc-sections,--error-unresolved-symbols,--fatal-warnings \
 	-fdata-sections -ffunction-sections \
 	"-D__weak=__attribute__((weak))" \

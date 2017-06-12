@@ -1,5 +1,7 @@
-gcc-arm-none-eabi-5_4-2016q3: gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
-	@tar xjf $<
+tools: gcc-arm-none-eabi-6-2017-q1-update STM32Cube_FW_F0_V1.8.0
 
-gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2:
-	@wget https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
+gcc-arm-none-eabi-6-2017-q1-update: gcc-arm-none-eabi-6-2017-q1-update-linux.tar.bz2
+	tar xjf $<
+
+STM32Cube_FW_F0_V1.8.0: en.stm32cubef0.zip
+	unzip -q -DD $<
