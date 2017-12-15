@@ -1,0 +1,59 @@
+module Demo
+{
+    define void Main()
+    {
+        local i32 BlinkSpeed
+
+        ldc       i32 1
+        stloc     BlinkSpeed
+    l1: syscall   bool IsButtonPressed()
+        brfalse.s l2
+
+        syscall   void Led4On()
+        ldc       i32 1000
+        syscall   void Delay(i32)
+        syscall   void Led4Off()
+        ldloc     BlinkSpeed
+        ldc       i32 1
+        add
+        stloc     BlinkSpeed
+        ldloc     BlinkSpeed
+        ldc       i32 3
+        bne.un.s  l2
+
+        ldc       i32 0
+        stloc     BlinkSpeed
+    l2: ldloc     BlinkSpeed
+        ldc       i32 2
+        bne.un.s  l3
+
+        syscall   void Led3Toggle()
+        ldc       i32 100
+        syscall   void Delay(i32)
+        br.s      l1
+
+    l3: ldloc     BlinkSpeed
+        ldc       i32 1
+        bne.un.s  l4
+
+        syscall   void Led3Toggle()
+        ldc       i32 200
+        syscall   void Delay(i32)
+        br.s      l1
+
+    l4: syscall   void Led3Off()
+        br.s      l1
+    }
+
+    declare bool IsButtonPressed() 101
+
+    declare void Led4On() 102
+
+    declare void Led4Off() 103
+
+    declare void Led3Toggle() 104
+
+    declare void Led3Off() 105
+
+    declare void Delay(i32 milliseconds) 106
+}

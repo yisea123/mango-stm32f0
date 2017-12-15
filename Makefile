@@ -1,5 +1,5 @@
-ARMGNU = tools/gcc-arm-none-eabi-6-2017-q1-update/bin/arm-none-eabi
-STM32Cube = tools/STM32Cube_FW_F0_V1.8.0
+ARMGNU = tools/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi
+STM32Cube = tools/STM32Cube_FW_F0_V1.9.0
 
 CPU = -mthumb -mcpu=cortex-m0 -mfloat-abi=soft
 
@@ -79,11 +79,10 @@ OBJ_FILES = $(addprefix obj/,$(addsuffix .o,$(basename $(SOURCES))))
 
 CFLAGS = $(CPU) --specs=$(SPECS) \
 	-Wall -Wextra -Wno-unused-parameter -Werror \
-	-std=c11 -Os -fvisibility=hidden \
+	-std=c11 -O3 -flto -fdata-sections -ffunction-sections \
 	-Wl,--gc-sections,--error-unresolved-symbols,--fatal-warnings \
-	-fdata-sections -ffunction-sections \
-	"-D__weak=__attribute__((weak))" \
-	"-D__packed=__attribute__((__packed__))" \
+	-D__weak='__attribute__((weak))' \
+	-D__packed='__attribute__((__packed__))' \
 	$(addprefix -I,$(INCLUDES)) \
 	$(addprefix -D,$(DEFINES))
 

@@ -58,59 +58,45 @@ static void MX_GPIO_Init(void) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-uint8_t memory[128];
-
 #include "demo.inc"
+
+uint8_t memory[128];
 
 int main(void) {
   HAL_Init();
   SystemClock_Config();
   MX_GPIO_Init();
 
-  mango_vm *vm = mango_initialize(memory, sizeof(memory), NULL);
+  mango_vm *vm = mango_initialize(memory, sizeof(memory), 32, NULL);
   if (!vm) {
     return 0;
   }
 
-  if (mango_stack_create(vm, 32)) {
+  if (mango_module_import(vm, demo_name, demo_code, sizeof(demo_code), NULL)) {
     return 0;
   }
 
-  if (mango_module_import(vm, demo_name, demo_code, sizeof(demo_code), NULL,
-                          MANGO_IMPORT_TRUSTED_MODULE |
-                              MANGO_IMPORT_SKIP_VERIFICATION)) {
-    return 0;
-  }
-
-  while (1) {
-    switch (mango_execute(vm)) {
-    default:
-      return 0;
-    case MANGO_E_SUCCESS:
-      return 0;
-    case MANGO_E_SYSCALL:
-      switch (mango_syscall(vm)) {
-      case 99:
-        *(int32_t *)mango_stack_alloc(vm, 4, 0) =
-            (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_SET);
-        break;
-      case 100:
-        HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
-        break;
-      case 101:
-        HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
-        break;
-      case 102:
-        HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
-        break;
-      case 103:
-        HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-        break;
-      case 104:
-        HAL_Delay(*(int32_t *)mango_stack_top(vm));
-        mango_stack_free(vm, sizeof(int32_t));
-        break;
-      }
+  while (mango_run(vm) == MANGO_E_SYSCALL) {
+    switch (mango_syscall(vm)) {
+    case 101:
+      *(int32_t *)mango_stack_alloc(vm, sizeof(int32_t), 0) =
+          (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_SET);
+      break;
+    case 102:
+      HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
+      break;
+    case 103:
+      HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+      break;
+    case 104:
+      HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+      break;
+    case 105:
+      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+      break;
+    case 106:
+      HAL_Delay(*(int32_t *)mango_stack_top(vm));
+      mango_stack_free(vm, sizeof(int32_t));
       break;
     }
   }
