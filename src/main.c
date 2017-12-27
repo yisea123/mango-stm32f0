@@ -76,7 +76,7 @@ int main(void) {
     return 0;
   }
 
-  while (mango_run(vm) == MANGO_E_SYSCALL) {
+  while (mango_run(vm) == MANGO_E_SYSTEM_CALL) {
     switch (mango_syscall(vm)) {
     case 101:
       *(int32_t *)mango_stack_alloc(vm, sizeof(int32_t), 0) =
