@@ -58,7 +58,11 @@ static void MX_GPIO_Init(void) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#define MODULE(Fingerprint, Name, Identifier, Length, Image)                   \
+  static const uint8_t demo_name[12] = Fingerprint;                            \
+  static const uint8_t demo_code[Length] = Image;
 #include "demo.inc"
+#undef MODULE
 
 uint8_t memory[128];
 
@@ -98,6 +102,8 @@ int main(void) {
       HAL_Delay(*(int32_t *)mango_stack_top(vm));
       mango_stack_free(vm, sizeof(int32_t));
       break;
+    default:
+      mango_error(vm, MANGO_E_SYSTEM_CALL_NOT_FOUND);
     }
   }
 }

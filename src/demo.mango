@@ -1,59 +1,59 @@
-module Demo
+module Blink
 {
-    define void Main()
+    define void @main()
     {
-        local i32 BlinkSpeed
+        local i32 %blinkSpeed
 
         ldc       i32 1
-        stloc     BlinkSpeed
-    l1: syscall   bool IsButtonPressed()
-        brfalse.s l2
+        stloc     %blinkSpeed
+    L1: syscall   bool @isButtonPressed()
+        brfalse.s L2
 
-        syscall   void Led4On()
+        syscall   void @led4On()
         ldc       i32 1000
-        syscall   void Delay(i32)
-        syscall   void Led4Off()
-        ldloc     BlinkSpeed
+        syscall   void @delay(i32)
+        syscall   void @led4Off()
+        ldloc     %blinkSpeed
         ldc       i32 1
         add
-        stloc     BlinkSpeed
-        ldloc     BlinkSpeed
+        stloc     %blinkSpeed
+        ldloc     %blinkSpeed
         ldc       i32 3
-        bne.un.s  l2
+        bne.un.s  L2
 
         ldc       i32 0
-        stloc     BlinkSpeed
-    l2: ldloc     BlinkSpeed
+        stloc     %blinkSpeed
+    L2: ldloc     %blinkSpeed
         ldc       i32 2
-        bne.un.s  l3
+        bne.un.s  L3
 
-        syscall   void Led3Toggle()
+        syscall   void @led3Toggle()
         ldc       i32 100
-        syscall   void Delay(i32)
-        br.s      l1
+        syscall   void @delay(i32)
+        br.s      L1
 
-    l3: ldloc     BlinkSpeed
+    L3: ldloc     %blinkSpeed
         ldc       i32 1
-        bne.un.s  l4
+        bne.un.s  L4
 
-        syscall   void Led3Toggle()
+        syscall   void @led3Toggle()
         ldc       i32 200
-        syscall   void Delay(i32)
-        br.s      l1
+        syscall   void @delay(i32)
+        br.s      L1
 
-    l4: syscall   void Led3Off()
-        br.s      l1
+    L4: syscall   void @led3Off()
+        br.s      L1
     }
 
-    declare bool IsButtonPressed() 101
+    declare bool @isButtonPressed() 101
 
-    declare void Led4On() 102
+    declare void @led4On() 102
 
-    declare void Led4Off() 103
+    declare void @led4Off() 103
 
-    declare void Led3Toggle() 104
+    declare void @led3Toggle() 104
 
-    declare void Led3Off() 105
+    declare void @led3Off() 105
 
-    declare void Delay(i32 milliseconds) 106
+    declare void @delay(i32 milliseconds) 106
 }
